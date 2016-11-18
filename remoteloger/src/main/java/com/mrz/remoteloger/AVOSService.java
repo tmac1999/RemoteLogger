@@ -41,7 +41,7 @@ public class AVOSService {
         doing.put("imei", imei);
         doing.saveInBackground();
     }
-    public static void uploadDeviceInfo(Context c,String user_factor){
+    public static void uploadDeviceInfo(Context c,String user_factor,String username){
         AVObject avObject = new AVObject("DeviceInfo");
         String deviceType = "BRAND=" + Build.BRAND + ",MODEL=" + Build.MODEL + ",SDK_INT=" + Build.VERSION.SDK_INT;
         avObject.put("deviceType", deviceType);
@@ -49,6 +49,8 @@ public class AVOSService {
         avObject.put("user_factor", user_factor);
         avObject.put("imei", CommonUtils.getDeviceId(c));
         avObject.put("appversion", CommonUtils.getPackageVersionAndName(c));
+        avObject.put("username", username);
+
         avObject.saveInBackground();
     }
 }

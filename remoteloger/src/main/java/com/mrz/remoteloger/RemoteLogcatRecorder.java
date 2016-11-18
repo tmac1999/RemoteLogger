@@ -34,7 +34,6 @@ public class RemoteLogcatRecorder {
     /**
      * 上传形式，文件或者一行一行上传
      */
-    @Deprecated
     int uploadType;
 
     /**
@@ -54,6 +53,7 @@ public class RemoteLogcatRecorder {
      * 是否需要加密
      */
     boolean shouldEncrypt;
+    private String username;
 
 
     /**
@@ -84,6 +84,7 @@ public class RemoteLogcatRecorder {
         this.uploadType = builder.uploadType;
         this.AVOSAppId = builder.AVOSAppId;
         this.AVOSAppKey = builder.AVOSAppKey;
+        this.username = builder.username;
         mPId = android.os.Process.myPid();
     }
 
@@ -120,6 +121,7 @@ public class RemoteLogcatRecorder {
          * 是否需要加密
          */
         boolean shouldEncrypt;
+        private String username;
 
         /**
          * default setting
@@ -131,6 +133,15 @@ public class RemoteLogcatRecorder {
             shouldEncrypt = false;
         }
 
+        /**
+         *
+         * @param username optional ,username will be add in the device info table for record
+         * @return builder
+         */
+        public Builder username(String username){
+            this.username = username;
+            return this;
+        }
         public Builder uploadFileSize(int kb) {
             if (kb < 1 || kb > 5 * 1024) {
                 throw new IllegalArgumentException("size too large or too small");
@@ -187,7 +198,7 @@ public class RemoteLogcatRecorder {
         /**
          * <p>NOTE：factorType should not be null.if factor,factorType match with server,it will create a log file,and start log.
          * <p>if factor is null,it will immediatly return and do nothing.
-         * <p>NOTE：if already builded（which means  RemoteLogcatRecorder already exist ）,this will reuse the same instance with  new  config(ignore AVOSAppId,AVOSAppKey),wont create more log file or log thread.
+         * <p>NOTE：if already builded（which means  RemoteLogcatRecorder already exist ）,this will reuse the same instance with  new  config(ignore AVOSAppId,AVOSAppKey).
          */
         public RemoteLogcatRecorder build() {
             if (INSTANCE == null) {
@@ -207,6 +218,7 @@ public class RemoteLogcatRecorder {
         this.shouldEncrypt = builder.shouldEncrypt;
         this.Upload_file_size = builder.Upload_file_size;
         this.uploadType = builder.uploadType;
+        this.username = builder.username;
     }
 
 
@@ -238,7 +250,7 @@ public class RemoteLogcatRecorder {
     private void start(Context context ,String factor,String mLogDumpernotnull, String mLogDumpernull) {
         if (mLogDumper == null) {
             mLogDumper = new LogDumper(String.valueOf(mPId), PATH_LOGCAT, factor);
-            AVOSService.uploadDeviceInfo(context, factor);
+            AVOSService.uploadDeviceInfo(context, factor,username);
             mLogDumper.start();
             Log.d("doStartLog", mLogDumpernotnull);
         } else {
