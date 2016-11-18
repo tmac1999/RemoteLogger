@@ -170,6 +170,7 @@ public class RemoteLogcatRecorder {
          * 比如指定某一个imei Upload_factor = imei
          * 比如某一个指令     =action
          * 比如某一类机型。。？
+         *
          * @param factor if factor type isnt {@link RemoteLogcatRecorder.FactorType#BUTTON} ,it will be used for  named the server database table and comparison and will determine whether or not  start log.
          *               <p>         if factor type is {@link RemoteLogcatRecorder.FactorType#BUTTON} ,it will be used for  named the server database table
          **/
@@ -227,12 +228,21 @@ public class RemoteLogcatRecorder {
                 doStartLog(AVOSService.FACTOR_TYPE_IMEI, factor, context);
                 break;
             case BUTTON:
-                if (mLogDumper == null)
-                    mLogDumper = new LogDumper(String.valueOf(mPId), PATH_LOGCAT, factor);
-                    AVOSService.uploadDeviceInfo(context, factor);
-                    mLogDumper.start();
-                    Log.d("doStartLog", "BUTTON switch to open! remote log started!");
+                String  mLogDumpernotnull = "BUTTON switch to open ! remote log started!";
+                String  mLogDumpernull = "mLogDumper not null !!";
+                start(context,factor,mLogDumpernotnull,mLogDumpernull);
                 break;
+        }
+    }
+
+    private void start(Context context ,String factor,String mLogDumpernotnull, String mLogDumpernull) {
+        if (mLogDumper == null) {
+            mLogDumper = new LogDumper(String.valueOf(mPId), PATH_LOGCAT, factor);
+            AVOSService.uploadDeviceInfo(context, factor);
+            mLogDumper.start();
+            Log.d("doStartLog", mLogDumpernotnull);
+        } else {
+            Log.d("doStartLog", mLogDumpernull);
         }
     }
 
@@ -246,14 +256,9 @@ public class RemoteLogcatRecorder {
                 Log.d("doStartLog", avObject + "===");
                 String server_factor = avObject.getString(factorType);
                 if (user_factor != null && user_factor.equals(server_factor)) {
-                    if (mLogDumper == null) {
-                        mLogDumper = new LogDumper(String.valueOf(mPId), PATH_LOGCAT, user_factor);
-                        AVOSService.uploadDeviceInfo(context, user_factor);
-                        mLogDumper.start();
-                        Log.d("doStartLog", "factor match! remote log started!");
-                    } else {
-                        Log.d("doStartLog", "factor match! remote log has already started and wont start again!");
-                    }
+                    String mLogDumpernull = "factor match! remote log has already started and wont start again!";
+                    String mLogDumpernotnull = "factor match! remote log started!";
+                    start(context,user_factor,mLogDumpernotnull,mLogDumpernull);
                 } else {
 
                     if (mLogDumper != null) {
@@ -307,7 +312,7 @@ public class RemoteLogcatRecorder {
         if (mLogDumper != null) {
             mLogDumper.stopLogs();
             mLogDumper = null;
-            Log.d(TAG,"RemoteLogger has stopped !");
+            Log.d(TAG, "RemoteLogger has stopped !");
         }
     }
 
@@ -360,7 +365,7 @@ public class RemoteLogcatRecorder {
         }
 
 
-        public void stopLogs() {
+        private void stopLogs() {
             mRunning = false;
         }
 
