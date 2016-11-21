@@ -18,7 +18,7 @@ public class CommonUtils {
             TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
             String imei = tm.getDeviceId();
             if (isEmpty(imei)) {
-                //针对小米4手机android6.0出现flag为true,但仍然拿不到DeviceId的情况。
+                //for the situation that mi4 android6.0 which flag is true,but still cant get DeviceId
                 String uniqueID = getUniqueID();
                 if (!isEmpty(uniqueID)) {
                     deviceId.append(uniqueID);
@@ -40,10 +40,10 @@ public class CommonUtils {
         return deviceId.toString();
     }
     /**
-     * 判断字符串是否为空
+     * whether the string is null or ""
      *
-     * @param s
-     * @return
+     * @param s string
+     * @return boolean
      */
     private static boolean isEmpty(String s) {
         if (null == s)
@@ -55,7 +55,7 @@ public class CommonUtils {
         return false;
     }
     /**
-     * 获取唯一手机设备码（没开权限的时候）
+     * getUniqueID
      *
      * @return
      */
@@ -74,9 +74,7 @@ public class CommonUtils {
 
 
     public static String getPackageVersionAndName(Context c) {
-        // 获取packagemanager的实例
         PackageManager packageManager = c.getPackageManager();
-        // getPackageName()是你当前类的包名，0代表是获取版本信息
         PackageInfo packInfo;
         try {
             packInfo = packageManager.getPackageInfo(c.getPackageName(), 0);

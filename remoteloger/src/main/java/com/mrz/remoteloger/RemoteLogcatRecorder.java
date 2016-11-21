@@ -18,9 +18,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 /**
- * log日志统计保存
- *
- * @author way
+ * log recorder
  */
 
 public class RemoteLogcatRecorder {
@@ -32,12 +30,13 @@ public class RemoteLogcatRecorder {
     private LogDumper mLogDumper = null;
     private int mPId;
     /**
-     * 上传形式，文件或者一行一行上传
+     * <p>type as{@link RemoteLogcatRecorder.Builder#UPLOAD_BY_LINE}
+     * <p>type as{@link RemoteLogcatRecorder.Builder#UPLOAD_TYPE_FILE}
      */
     int uploadType;
 
     /**
-     * 上传的地址
+     * upload to your server url
      */
     String uploadUrl;
     FactorType factorType;
@@ -45,19 +44,19 @@ public class RemoteLogcatRecorder {
     String AVOSAppKey;
     String factor;
     /**
-     * 当上传 的是文件时，文件限制大小
+     * if you set {@link Builder#UPLOAD_TYPE_FILE},you could set your file size
      */
 
     int Upload_file_size;
     /**
-     * 是否需要加密
+     * whether or not encrypt
      */
     boolean shouldEncrypt;
     private String username;
 
 
     /**
-     * 初始化目录
+     * init log file dir
      */
     public void initFile(Context context) {
         if (Environment.getExternalStorageState().equals(
@@ -95,32 +94,19 @@ public class RemoteLogcatRecorder {
     //=======================================================================Builder Start
     public static final class Builder {
         /**
-         * 逐行上传容易出现先后顺序错乱，obsolete
+         * NOTE:this maybe cause log sequence disorder，
          */
-        @Deprecated
         public static final int UPLOAD_BY_LINE = 1;
         public static final int UPLOAD_TYPE_FILE = 2;
-        FactorType factorType;
-        String factor;
-        /**
-         * 上传形式，文件或者一行一行上传
-         */
-        int uploadType;
-        /**
-         * 上传的地址
-         */
-        String uploadUrl;
-        String AVOSAppId;
-        String AVOSAppKey;
-        /**
-         * 当上传 的是文件时，文件限制大小
-         */
+        private FactorType factorType;
+        private String factor;
+        private int uploadType;
+        private String uploadUrl;
+        private String AVOSAppId;
+        private String AVOSAppKey;
 
-        int Upload_file_size;
-        /**
-         * 是否需要加密
-         */
-        boolean shouldEncrypt;
+        private int Upload_file_size;
+        private boolean shouldEncrypt;
         private String username;
 
         /**
@@ -134,14 +120,14 @@ public class RemoteLogcatRecorder {
         }
 
         /**
-         *
          * @param username optional ,username will be add in the device info table for record
          * @return builder
          */
-        public Builder username(String username){
+        public Builder username(String username) {
             this.username = username;
             return this;
         }
+
         public Builder uploadFileSize(int kb) {
             if (kb < 1 || kb > 5 * 1024) {
                 throw new IllegalArgumentException("size too large or too small");
@@ -240,17 +226,17 @@ public class RemoteLogcatRecorder {
                 doStartLog(AVOSService.FACTOR_TYPE_IMEI, factor, context);
                 break;
             case BUTTON:
-                String  mLogDumpernotnull = "BUTTON switch to open ! remote log started!";
-                String  mLogDumpernull = "mLogDumper not null !!";
-                start(context,factor,mLogDumpernotnull,mLogDumpernull);
+                String mLogDumpernotnull = "BUTTON switch to open ! remote log started!";
+                String mLogDumpernull = "mLogDumper not null !!";
+                start(context, factor, mLogDumpernotnull, mLogDumpernull);
                 break;
         }
     }
 
-    private void start(Context context ,String factor,String mLogDumpernotnull, String mLogDumpernull) {
+    private void start(Context context, String factor, String mLogDumpernotnull, String mLogDumpernull) {
         if (mLogDumper == null) {
             mLogDumper = new LogDumper(String.valueOf(mPId), PATH_LOGCAT, factor);
-            AVOSService.uploadDeviceInfo(context, factor,username);
+            AVOSService.uploadDeviceInfo(context, factor, username);
             mLogDumper.start();
             Log.d("doStartLog", mLogDumpernotnull);
         } else {
@@ -270,7 +256,7 @@ public class RemoteLogcatRecorder {
                 if (user_factor != null && user_factor.equals(server_factor)) {
                     String mLogDumpernull = "factor match! remote log has already started and wont start again!";
                     String mLogDumpernotnull = "factor match! remote log started!";
-                    start(context,user_factor,mLogDumpernotnull,mLogDumpernull);
+                    start(context, user_factor, mLogDumpernotnull, mLogDumpernull);
                 } else {
 
                     if (mLogDumper != null) {
@@ -338,12 +324,11 @@ public class RemoteLogcatRecorder {
         private FileOutputStream out = null;
         private String factor;
         /**
-         * 一次上传多少行
+         * how many lines to be upload one time
          */
         private int UPLOAD_LINE_NUM = 5;
 
         /**
-         * TODO 保证线程对象唯一，不然上传多份日志
          *
          * @param pid
          * @param dir
@@ -363,16 +348,15 @@ public class RemoteLogcatRecorder {
 
             /**
              *
-             * 日志等级：*:v , *:d ,  *:i，*:w , *:e , *:f , *:s    VERBOSE、DEBUG、INFO、WARN、ERROR FATAL
+             * log level：*:v , *:d ,  *:i，*:w , *:e , *:f , *:s    VERBOSE、DEBUG、INFO、WARN、ERROR FATAL
              *
-             * 显示当前mPID程序的 E和W等级的日志.
-             *grep（global search regular expression(RE) and print out the line，全面搜索正则表达式并把行打印出来）
+             *grep（global search regular expression(RE) and print out the line，）
              * */
 
             // cmds = "logcat *:e *:w | grep \"(" + mPID + ")\"";
-            cmds = "logcat  | grep \"(" + mPID + ")\"";//打印所有日志信息
-            // cmds = "logcat -s way";//打印标签过滤信息
-            // cmds = "logcat *:e *:i | grep \"(" + mPID + ")\"";  //输出e w i级别的日志
+            cmds = "logcat  | grep \"(" + mPID + ")\"";//print all level log
+            // cmds = "logcat -s way";//print filter tag log
+            // cmds = "logcat *:e *:i | grep \"(" + mPID + ")\"";  //print level "e w i" log
             this.factor = factor;
         }
 

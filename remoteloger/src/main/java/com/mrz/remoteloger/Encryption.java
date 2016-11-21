@@ -14,7 +14,6 @@ public class Encryption {
     }
 
     /**
-     * 6.29新的加密方式。（原加密方式加密结果因为都是16的整数倍，“有可能”产生错误）
      * @param s
      * @param checkCode
      * @return
@@ -46,7 +45,7 @@ public class Encryption {
 
 
     /**
-     * 将二进制转换成16进制
+     * Byte transfer to hex
      *
      * @param buf
      * @return
@@ -64,10 +63,8 @@ public class Encryption {
     }
 
 
-    // 解密
     public static String desEncrypt(String data,String checkCode) throws Exception {
         try {
-//            String data = "2fbwW9+8vPId2/foafZq6Q==";
             String key = checkCode;
             String iv = checkCode;
             byte[] encrypted1 = parseHexStr2Byte(data);
@@ -85,7 +82,7 @@ public class Encryption {
     }
 
     /**
-     * 将16进制转换为二进制
+     * hex transfer to byte
      *
      * @param hexStr
      * @return

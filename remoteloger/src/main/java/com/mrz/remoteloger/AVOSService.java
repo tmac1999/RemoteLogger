@@ -11,7 +11,7 @@ public class AVOSService {
     /**
      * Error code indicating a missing or invalid classname. Classnames are case-sensitive. They must start with a letter, and a-zA-Z0-9_ are the only valid characters.
      * @param factor They must start with a letter, and a-zA-Z0-9_ are the only valid characters.
-     * @param line 上传行内容
+     * @param line log content line
      */
     public static void upload(String factor, String line) {
         AVObject doing = new AVObject("user_"+factor);

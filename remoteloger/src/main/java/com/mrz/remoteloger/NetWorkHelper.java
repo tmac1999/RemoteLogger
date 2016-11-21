@@ -3,11 +3,6 @@ package com.mrz.remoteloger;
 import android.content.Context;
 import android.net.ConnectivityManager;
 
-/**
- * @author LXM
- * @date 2015年7月16日
- * @detail 作用：获取当前版本号，版本名，监听网络状态
- */
 public class NetWorkHelper {
     private Context context;
     private volatile static NetWorkHelper helper;
@@ -24,10 +19,6 @@ public class NetWorkHelper {
         }
         return helper;
     }
-
-    /**
-     * 获取网络类型
-     */
     public String getNetWorkType(){
         String typeName = null;
         try {
