@@ -27,7 +27,7 @@ public class RemoteLogcatRecorder {
     private static final String TAG = "RemoteLogger";
     private static RemoteLogcatRecorder INSTANCE = null;
     private static String PATH_LOGCAT;
-    private LogDumper mLogDumper = null;
+    private static LogDumper mLogDumper = null;
     private int mPId;
     /**
      * <p>type as{@link RemoteLogcatRecorder.Builder#UPLOAD_BY_LINE}
@@ -226,8 +226,8 @@ public class RemoteLogcatRecorder {
                 doStartLog(AVOSService.FACTOR_TYPE_IMEI, factor, context);
                 break;
             case BUTTON:
-                String mLogDumpernotnull = "BUTTON switch to open ! remote log started!";
-                String mLogDumpernull = "mLogDumper not null !!";
+                String mLogDumpernull = "BUTTON switch to open ! remote log started!";
+                String mLogDumpernotnull = "mLogDumper not null !!";
                 start(context, factor, mLogDumpernotnull, mLogDumpernull);
                 break;
         }
@@ -238,9 +238,9 @@ public class RemoteLogcatRecorder {
             mLogDumper = new LogDumper(String.valueOf(mPId), PATH_LOGCAT, factor);
             AVOSService.uploadDeviceInfo(context, factor, username);
             mLogDumper.start();
-            Log.d("doStartLog", mLogDumpernotnull);
-        } else {
             Log.d("doStartLog", mLogDumpernull);
+        } else {
+            Log.d("doStartLog", mLogDumpernotnull);
         }
     }
 
@@ -254,8 +254,8 @@ public class RemoteLogcatRecorder {
                 Log.d("doStartLog", avObject + "===");
                 String server_factor = avObject.getString(factorType);
                 if (user_factor != null && user_factor.equals(server_factor)) {
-                    String mLogDumpernull = "factor match! remote log has already started and wont start again!";
-                    String mLogDumpernotnull = "factor match! remote log started!";
+                    String mLogDumpernotnull = "factor match! remote log has already started and wont start again!";
+                    String mLogDumpernull = "factor match! remote log started!";
                     start(context, user_factor, mLogDumpernotnull, mLogDumpernull);
                 } else {
 
@@ -282,6 +282,16 @@ public class RemoteLogcatRecorder {
     }
 
     /**
+     * 反复开关时，可能会因为第二次打开会记录下之前的内容并上传。
+     * 比如 start 1 2 3 stop 4 5 6 start 7 8 stop start 9 10
+     * 可能会上传为
+     * <p>start 1 2 3       start 1 2 3 stop 4 5 6 start 7 8      start 1 2 3 stop 4 5 6 start 7 8 stop start 9 10
+     *  三条log记录的时间也会顺移
+     * <p>2016-11-23 10:33:21 D/RemoteLogger( 9060): did you see me in back end ? 0
+     * <p>2016-11-23 10:33:28 D/RemoteLogger( 9060): did you see me in back end ? 0
+     * <p>2016-11-23 10:33:39 D/RemoteLogger( 9060): did you see me in back end ? 0
+     * 这一点与logcat类似，手机插入时，会先大量打印插入之前(数分钟？)的log.
+     * 因此尽量避免stop后又重新start,每次start都会新开一个线程对象logDumper
      * @param context activity or application
      */
     public void startWithInit(Context context) {
@@ -294,10 +304,8 @@ public class RemoteLogcatRecorder {
          如果需要提高这一上限，请写信至 support@leancloud.cn 进行申请。
          */
         AVOSCloud.initialize(context, AVOSAppId, AVOSAppKey);
-        // AVOSCloud.initialize(context,"PdT80DTSvAdKfFhHqjn37mBD-gzGzoHsz","vhpfjQXjx7bJDrn8OyMSpwsu");
         startWithoutInit(context);
     }
-
     public void startWithoutInit(Context context) {
         if (uploadType == Builder.UPLOAD_TYPE_FILE) {
             initFile(context);
@@ -306,7 +314,7 @@ public class RemoteLogcatRecorder {
 
     }
 
-    public void stop() {
+    public static void stop() {
         if (mLogDumper != null) {
             mLogDumper.stopLogs();
             mLogDumper = null;

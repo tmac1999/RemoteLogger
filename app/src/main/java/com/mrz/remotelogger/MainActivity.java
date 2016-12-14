@@ -53,13 +53,7 @@ public class MainActivity extends AppCompatActivity {
 //                .uploadUrl("www.baidu.com/log")
                             .build().startWithoutInit(getApplicationContext());
                 }else{
-                    new RemoteLogcatRecorder.Builder()
-                            .factorType(RemoteLogcatRecorder.FactorType.BUTTON)
-                            .factor(TestApplication.getDeviceId(getApplicationContext()))
-//                .uploadFileSize(1024)
-//                .shouldEncrypt(true)
-//                .uploadUrl("www.baidu.com/log")
-                            .build().stop();
+                    RemoteLogcatRecorder.stop();
                 }
             }
         });

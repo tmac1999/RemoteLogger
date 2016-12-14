@@ -28,7 +28,7 @@ publish {
     userOrg = 'tmac1999'//bintray.com用户名
     groupId = 'com.mrz'//jcenter上的路径
     artifactId = 'remotelogger'//项目名称
-    publishVersion = '1.0.0'//版本号
+    publishVersion = '1.0.2'//版本号
     desc = 'remotelogger for android '//描述，不重要
     website = 'https://github.com/tmac1999/remotelogger'//网站，不重要；尽量模拟github上的地址，例如我这样的；当然你有地址最好了
 }
