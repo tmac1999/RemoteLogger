@@ -13,7 +13,7 @@ public class AVOSService {
      * @param factor They must start with a letter, and a-zA-Z0-9_ are the only valid characters.
      * @param line log content line
      */
-    public static void upload(String factor, String line) {
+    public static void uploadByLine(String factor, String line) {
         AVObject doing = new AVObject("user_"+factor);
         doing.put("log_lines", line);
         doing.saveInBackground();

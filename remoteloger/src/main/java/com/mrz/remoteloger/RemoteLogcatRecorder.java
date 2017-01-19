@@ -36,7 +36,7 @@ public class RemoteLogcatRecorder {
     int uploadType;
 
     /**
-     * upload to your server url
+     * uploadByLine to your server url
      */
     String uploadUrl;
     FactorType factorType;
@@ -332,7 +332,7 @@ public class RemoteLogcatRecorder {
         private FileOutputStream out = null;
         private String factor;
         /**
-         * how many lines to be upload one time
+         * how many lines to be uploadByLine one time
          */
         private int UPLOAD_LINE_NUM = 5;
 
@@ -341,6 +341,7 @@ public class RemoteLogcatRecorder {
          * @param pid
          * @param dir
          * @param factor
+         * TODO cmds加入配置
          */
         public LogDumper(String pid, String dir, String factor) {
             mPID = pid;
@@ -362,9 +363,9 @@ public class RemoteLogcatRecorder {
              * */
 
             // cmds = "logcat *:e *:w | grep \"(" + mPID + ")\"";
-            cmds = "logcat  | grep \"(" + mPID + ")\"";//print all level log
+           // cmds = "logcat  | grep \"(" + mPID + ")\"";//print all level log
             // cmds = "logcat -s way";//print filter tag log
-            // cmds = "logcat *:e *:i | grep \"(" + mPID + ")\"";  //print level "e w i" log
+             cmds = "logcat *:e *:w  | grep \"(" + mPID + ")\"";  //print level "e w i" log
             this.factor = factor;
         }
 
@@ -402,7 +403,7 @@ public class RemoteLogcatRecorder {
                             if (out != null && uploadType == Builder.UPLOAD_TYPE_FILE) {
                                 out.write(encrypt.getBytes());
                             } else if (uploadType == Builder.UPLOAD_BY_LINE) {
-                                AVOSService.upload(factor, encrypt);
+                                AVOSService.uploadByLine(factor, encrypt);
                             }
 
                         } else {
@@ -415,10 +416,10 @@ public class RemoteLogcatRecorder {
 //                                }else{
 //                                    count =0;
 //                                    stringBuilder.append(writeLine);
-//                                    AVOSService.upload(factor, stringBuilder.toString());
+//                                    AVOSService.uploadByLine(factor, stringBuilder.toString());
 //                                    stringBuilder.delete(0,stringBuilder.length()-1);
 //                                }
-                                AVOSService.upload(factor, writeLine);
+                                AVOSService.uploadByLine(factor, writeLine);
                             }
                         }
                     }
