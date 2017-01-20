@@ -10,7 +10,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
-import com.mrz.remoteloger.RemoteLogcatRecorder;
+import com.mrz.remoteloger.core.RemoteLogcatRecorder;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "RemoteLogger";
@@ -22,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView tv_result;
     private WebView wv;
     private ToggleButton tbtn_open_log;
+    private RemoteLogcatRecorder recorder;
 
     // End Of Content View Elements
 
@@ -44,15 +45,20 @@ public class MainActivity extends AppCompatActivity {
         tbtn_open_log.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (b){
-                    new RemoteLogcatRecorder.Builder()
+                if (b) {
+//                .shouldEncrypt(true)
+//                .uploadUrl("www.baidu.com/log")
+                    recorder = new RemoteLogcatRecorder.Builder()
                             .factorType(RemoteLogcatRecorder.FactorType.BUTTON)
                             .factor(TestApplication.getDeviceId(getApplicationContext()))
+                            .uploadType(RemoteLogcatRecorder.Builder.UPLOAD_BY_LINE_FILE)
+                            .uploadFileMaxLine(100)
 //                .uploadFileSize(1024)
 //                .shouldEncrypt(true)
 //                .uploadUrl("www.baidu.com/log")
-                            .build().startWithoutInit(getApplicationContext());
-                }else{
+                            .build();
+                    recorder.startWithoutInit(getApplicationContext());
+                } else {
                     RemoteLogcatRecorder.stop();
                 }
             }
@@ -69,8 +75,9 @@ public class MainActivity extends AppCompatActivity {
         boolean loginSuccess = true;
         if (loginSuccess) {
             new RemoteLogcatRecorder.Builder()
-                    .factorType(RemoteLogcatRecorder.FactorType.USERNAME)
+                    .factorType(RemoteLogcatRecorder.FactorType.BUTTON)
                     .factor(username)
+                    .uploadType(RemoteLogcatRecorder.Builder.UPLOAD_BY_LINE_FILE)
 //                .uploadFileSize(1024)
 //                .shouldEncrypt(true)
 //                .uploadUrl("www.baidu.com/log")
@@ -84,6 +91,10 @@ public class MainActivity extends AppCompatActivity {
 
         Log.d(TAG, "did you see me in  back end ?    " + count);
         count++;
+    }
+
+    public void uploadlog(View v) {
+        recorder.doUploadLogs();
     }
 
 }

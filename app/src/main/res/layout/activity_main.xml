@@ -51,6 +51,12 @@
         android:onClick="printlog"
         android:text="打印LOG"/>
 
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="uploadlog"
+        android:text="上传日志（需要设置为UPLOAD_BY_FILE或者UPLOAD_BY_LINE_FILE模式）"/>
+
     <TextView
         android:id="@+id/tv_result"
         android:layout_width="match_parent"

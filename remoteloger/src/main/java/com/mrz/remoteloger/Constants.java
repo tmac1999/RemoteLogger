@@ -7,5 +7,5 @@ import android.os.Environment;
  */
 public class Constants {
     public static final String SALT = "a000004facc5edAA";
-    public static  String LOG_SDCARD_DIR = Environment.getDataDirectory()+"/log" ;
+    public static  String LOG_SDCARD_DIR = Environment.getExternalStorageDirectory()+"/log" ;
 }

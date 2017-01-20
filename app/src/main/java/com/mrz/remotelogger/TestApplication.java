@@ -6,7 +6,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.telephony.TelephonyManager;
 
-import com.mrz.remoteloger.RemoteLogcatRecorder;
+import com.mrz.remoteloger.core.RemoteLogcatRecorder;
 
 /**
  * Created by zhengpeng on 2016/11/17.

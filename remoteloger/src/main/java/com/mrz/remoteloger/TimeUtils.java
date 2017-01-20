@@ -26,7 +26,7 @@ public class TimeUtils {
      * @return
      */
     public static String getDateENddHHmmss() {
-        SimpleDateFormat format = new SimpleDateFormat("dd HH:mm:ss");
+        SimpleDateFormat format = new SimpleDateFormat("dd_HH_mm_ss");
         String date = format.format(new Date());
         return date;
     }

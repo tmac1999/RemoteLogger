@@ -1,5 +1,5 @@
 
-package com.mrz.remoteloger;
+package com.mrz.remoteloger.core;
 
 import android.content.Context;
 import android.os.Environment;
@@ -9,6 +9,10 @@ import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVOSCloud;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.GetCallback;
+import com.mrz.remoteloger.AVOSService;
+import com.mrz.remoteloger.Constants;
+import com.mrz.remoteloger.Encryption;
+import com.mrz.remoteloger.TimeUtils;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -21,17 +25,17 @@ import java.io.InputStreamReader;
  * log recorder
  */
 
-public class RemoteLogcatRecorder {
+public class RemoteLogcatRecorderTest {
 
 
     private static final String TAG = "RemoteLogger";
-    private static RemoteLogcatRecorder INSTANCE = null;
+    private static RemoteLogcatRecorderTest INSTANCE = null;
     private static String PATH_LOGCAT;
     private static LogDumper mLogDumper = null;
     private int mPId;
     /**
-     * <p>type as{@link RemoteLogcatRecorder.Builder#UPLOAD_BY_LINE}
-     * <p>type as{@link RemoteLogcatRecorder.Builder#UPLOAD_TYPE_FILE}
+     * <p>type as{@link RemoteLogcatRecorderTest.Builder#UPLOAD_BY_LINE}
+     * <p>type as{@link RemoteLogcatRecorderTest.Builder#UPLOAD_TYPE_FILE}
      */
     int uploadType;
 
@@ -73,7 +77,7 @@ public class RemoteLogcatRecorder {
     }
 
 
-    private RemoteLogcatRecorder(Builder builder) {
+    private RemoteLogcatRecorderTest(Builder builder) {
 
         this.factor = builder.factor;
         this.uploadUrl = builder.uploadUrl;
@@ -168,8 +172,8 @@ public class RemoteLogcatRecorder {
          * 比如某一个指令     =action
          * 比如某一类机型。。？
          *
-         * @param factor if factor type isnt {@link RemoteLogcatRecorder.FactorType#BUTTON} ,it will be used for  named the server database table and comparison and will determine whether or not  start log.
-         *               <p>         if factor type is {@link RemoteLogcatRecorder.FactorType#BUTTON} ,it will be used for  named the server database table
+         * @param factor if factor type isnt {@link RemoteLogcatRecorderTest.FactorType#BUTTON} ,it will be used for  named the server database table and comparison and will determine whether or not  start log.
+         *               <p>         if factor type is {@link RemoteLogcatRecorderTest.FactorType#BUTTON} ,it will be used for  named the server database table
          **/
         public Builder factor(String factor) {
             this.factor = factor;
@@ -186,9 +190,9 @@ public class RemoteLogcatRecorder {
          * <p>if factor is null,it will immediatly return and do nothing.
          * <p>NOTE：if already builded（which means  RemoteLogcatRecorder already exist ）,this will reuse the same instance with  new  config(ignore AVOSAppId,AVOSAppKey).
          */
-        public RemoteLogcatRecorder build() {
+        public RemoteLogcatRecorderTest build() {
             if (INSTANCE == null) {
-                INSTANCE = new RemoteLogcatRecorder(this);
+                INSTANCE = new RemoteLogcatRecorderTest(this);
             } else {
                 INSTANCE.setBuilder(this);
             }
