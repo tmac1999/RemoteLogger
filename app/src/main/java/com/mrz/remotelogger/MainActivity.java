@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
                             .factor(TestApplication.getDeviceId(getApplicationContext()))
                             .uploadType(RemoteLogcatRecorder.Builder.UPLOAD_BY_LINE_FILE)
                             .logCmd(cmds)
-                            .uploadFileMaxLine(100)
+                            .uploadFileMaxLine(150)
 //                .uploadFileSize(1024)
 //                .shouldEncrypt(true)
 //                .uploadUrl("www.baidu.com/log")

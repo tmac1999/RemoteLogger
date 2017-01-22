@@ -41,8 +41,8 @@
         android:id="@+id/tbtn_open_log"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textOff="关闭日志"
-        android:textOn="开启日志"
+        android:textOff="已关闭（点击开启）"
+        android:textOn="已开启（点击关闭）"
         />
 
     <Button

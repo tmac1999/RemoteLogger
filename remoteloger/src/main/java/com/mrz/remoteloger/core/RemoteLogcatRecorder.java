@@ -2,7 +2,6 @@
 package com.mrz.remoteloger.core;
 
 import android.content.Context;
-import android.os.Environment;
 import android.util.Log;
 
 import com.avos.avoscloud.AVException;
@@ -31,8 +30,8 @@ public class RemoteLogcatRecorder {
 
     private static final String TAG = "RemoteLogger";
     private static RemoteLogcatRecorder INSTANCE = null;
-    private static String PATH_LOGCAT = Environment.getExternalStorageDirectory() + File.separator + "RomoteLogger" + File.separator;
-    ;
+    //private static String PATH_LOGCAT = Environment.getExternalStorageDirectory() + File.separator + "RomoteLogger" + File.separator;
+
     private String fileName;
     private static LogDumper mLogDumper = null;
     private int mPId;
@@ -125,7 +124,7 @@ public class RemoteLogcatRecorder {
         private String AVOSAppKey;
 
         private int Upload_file_size;
-        private int lineCount;
+        private int lineCount = 1000;
         private boolean shouldEncrypt;
         private String username;
         private String cmd;
@@ -250,30 +249,28 @@ public class RemoteLogcatRecorder {
     }
 
     //=======================================================================Builder end
-//    private void setBuilder(Builder builder) {
-//        this.factor = builder.factor;
-//        this.uploadUrl = builder.uploadUrl;
-//        this.factorType = builder.factorType;
-//        this.shouldEncrypt = builder.shouldEncrypt;
-//        this.Upload_file_size = builder.Upload_file_size;
-//        this.uploadType = builder.uploadType;
-//        this.username = builder.username;
-//        this.lineCount = builder.lineCount;
-//        this.cmd = builder.cmd;
-//    }
 
-
+    String PATH_LOGCAT;
     /**
      * init log file dir
+     * TODO context null point
      */
-    public void initFile(Context context) {
+    public FileOutputStream initFile(Context context) {
 
-//        PATH_LOGCAT = context.getFilesDir().getAbsolutePath()
-//                + File.separator + "RomoteLogger" + File.separator;
+        PATH_LOGCAT = context.getFilesDir().getAbsolutePath()
+                + File.separator + "RomoteLogger" + File.separator;
         File file = new File(PATH_LOGCAT);
         if (!file.exists()) {
             file.mkdirs();
         }
+        try {
+            fileName = "t" +
+                    TimeUtils.getDateENddHHmmss() + ".log";
+            out = new FileOutputStream(new File(PATH_LOGCAT, fileName));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return out;
     }
 
     private void shouldStart(Context context) {
@@ -303,7 +300,7 @@ public class RemoteLogcatRecorder {
 
     private void start(Context context, String factor, String mLogDumpernotnull, String mLogDumpernull) {
         if (mLogDumper == null) {
-            mLogDumper = new LogDumper(context, String.valueOf(mPId), PATH_LOGCAT, factor);
+            mLogDumper = new LogDumper(context, String.valueOf(mPId), factor);
             AVOSService.uploadDeviceInfo(context, factor, username);
             mLogDumper.start();
             Log.d("doStartLog", mLogDumpernull);
@@ -407,20 +404,12 @@ public class RemoteLogcatRecorder {
 
         /**
          * @param pid
-         * @param dir
          * @param factor
          */
-        public LogDumper(Context context, String pid, String dir, String factor) {
+        public LogDumper(Context context, String pid, String factor) {
             mPID = pid;
-            if (uploadType == Builder.UPLOAD_BY_FILE || uploadType == Builder.UPLOAD_BY_LINE_FILE) {
+            if (uploadType == Builder.UPLOAD_BY_FILE) {
                 initFile(context);
-                try {
-                    fileName = "t" +
-                            TimeUtils.getDateENddHHmmss() + ".log";
-                    out = new FileOutputStream(new File(dir, fileName));
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                }
             }
 
             /**
@@ -475,6 +464,7 @@ public class RemoteLogcatRecorder {
                             doRecordorUpload(encrypt);
 
                         } else {
+                            writeLine = writeLine + "\n";
                             doRecordorUpload(writeLine);
                         }
                     }
@@ -531,6 +521,7 @@ public class RemoteLogcatRecorder {
         if (uploadType == Builder.UPLOAD_BY_LINE) {
             throw new RuntimeException("uploadType not set or uploadType is UPLOAD_BY_LINE");
         }
+        FileOutputStream out = initFile(context);
         if (lines != null) {
             for (String line : lines) {
                 try {
