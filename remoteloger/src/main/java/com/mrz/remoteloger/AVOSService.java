@@ -75,8 +75,11 @@ public class AVOSService {
 
         @Override
         public void done(AVException e) {
-            int code = e.getCode();
-            e.printStackTrace();
+            int code = 0;
+            if (e != null) {
+                code = e.getCode();
+                e.printStackTrace();
+            }
             String url = avFile.getUrl();
             Log.d("done", "UploadCallback code=" + code + "url=" + url);
         }

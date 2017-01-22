@@ -31,7 +31,8 @@ public class RemoteLogcatRecorder {
 
     private static final String TAG = "RemoteLogger";
     private static RemoteLogcatRecorder INSTANCE = null;
-    private static String PATH_LOGCAT;
+    private static String PATH_LOGCAT = Environment.getExternalStorageDirectory() + File.separator + "RomoteLogger" + File.separator;
+    ;
     private String fileName;
     private static LogDumper mLogDumper = null;
     private int mPId;
@@ -269,7 +270,6 @@ public class RemoteLogcatRecorder {
 
 //        PATH_LOGCAT = context.getFilesDir().getAbsolutePath()
 //                + File.separator + "RomoteLogger" + File.separator;
-        PATH_LOGCAT = Environment.getExternalStorageDirectory()+ File.separator + "RomoteLogger" + File.separator;
         File file = new File(PATH_LOGCAT);
         if (!file.exists()) {
             file.mkdirs();
@@ -303,7 +303,7 @@ public class RemoteLogcatRecorder {
 
     private void start(Context context, String factor, String mLogDumpernotnull, String mLogDumpernull) {
         if (mLogDumper == null) {
-            mLogDumper = new LogDumper(context,String.valueOf(mPId), PATH_LOGCAT, factor);
+            mLogDumper = new LogDumper(context, String.valueOf(mPId), PATH_LOGCAT, factor);
             AVOSService.uploadDeviceInfo(context, factor, username);
             mLogDumper.start();
             Log.d("doStartLog", mLogDumpernull);
@@ -410,7 +410,7 @@ public class RemoteLogcatRecorder {
          * @param dir
          * @param factor
          */
-        public LogDumper(Context context,String pid, String dir, String factor) {
+        public LogDumper(Context context, String pid, String dir, String factor) {
             mPID = pid;
             if (uploadType == Builder.UPLOAD_BY_FILE || uploadType == Builder.UPLOAD_BY_LINE_FILE) {
                 initFile(context);

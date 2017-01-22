@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         bindViews();
+        final String cmds = "logcat  | grep \"(" + android.os.Process.myPid() + ")\"";
         tbtn_open_log.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -52,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
                             .factorType(RemoteLogcatRecorder.FactorType.BUTTON)
                             .factor(TestApplication.getDeviceId(getApplicationContext()))
                             .uploadType(RemoteLogcatRecorder.Builder.UPLOAD_BY_LINE_FILE)
+                            .logCmd(cmds)
                             .uploadFileMaxLine(100)
 //                .uploadFileSize(1024)
 //                .shouldEncrypt(true)
