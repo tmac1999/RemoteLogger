@@ -47,11 +47,14 @@ public class AVOSService {
 //    }
 
 
-    public static void uploadFile(String name, String imgAbsoluteLocalPath, SaveCallback uploadCallback, ProgressCallback uploadProgressCallback) {
+    public static void uploadFile(Context c, String fileName, String imgAbsoluteLocalPath, SaveCallback uploadCallback, ProgressCallback uploadProgressCallback) {
         AVFile avFile = null;
         try {
-            avFile = AVFile.withAbsoluteLocalPath(name, imgAbsoluteLocalPath);
-
+            avFile = AVFile.withAbsoluteLocalPath(fileName, imgAbsoluteLocalPath);
+            String deviceType = "BRAND=" + Build.BRAND + ",MODEL=" + Build.MODEL + ",SDK_INT=" + Build.VERSION.SDK_INT;
+            avFile.addMetaData("deviceType", deviceType);
+            avFile.addMetaData("imei", CommonUtils.getDeviceId(c));
+            avFile.addMetaData("appversion", CommonUtils.getPackageVersionAndName(c));
         } catch (IOException e) {
             e.printStackTrace();
         }

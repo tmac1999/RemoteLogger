@@ -36,10 +36,10 @@ public class RemoteLogcatRecorder {
     private static LogDumper mLogDumper = null;
     private int mPId;
     /**
-     * <p>type as{@link RemoteLogcatRecorder.Builder#UPLOAD_BY_LINE}
-     * <p>type as{@link RemoteLogcatRecorder.Builder#UPLOAD_BY_FILE}
+     * <p>type as{@link RemoteLogcatRecorder.Builder.UpLoadType#UPLOAD_BY_LINE}
+     * <p>type as{@link RemoteLogcatRecorder.Builder.UpLoadType#UPLOAD_BY_FILE}
      */
-    int uploadType;
+    Builder.UpLoadType uploadType;
 
     /**
      * uploadByLine to your server url
@@ -50,7 +50,7 @@ public class RemoteLogcatRecorder {
     String AVOSAppKey;
     String factor;
     /**
-     * if you set {@link Builder#UPLOAD_BY_FILE},you could set your file size
+     * if you set {@link Builder.UpLoadType#UPLOAD_BY_FILE},you could set your file size
      */
 
     int Upload_file_size;
@@ -104,21 +104,25 @@ public class RemoteLogcatRecorder {
 
     //=======================================================================Builder Start
     public static final class Builder {
-        /**
-         * NOTE:this maybe cause log sequence disorder，
-         */
-        public static final int UPLOAD_BY_LINE = 1;
-        /**
-         * 按文件上传，文件按字节数统计大小
-         */
-        public static final int UPLOAD_BY_FILE = 2;
-        /**
-         * 按文件上传，文件按行数统计大小
-         */
-        public static final int UPLOAD_BY_LINE_FILE = 3;
+        enum UpLoadType {
+            /**
+             * NOTE:this maybe cause log sequence disorder，
+             */
+            UPLOAD_BY_LINE,
+            /**
+             * 按文件上传，文件按字节数统计大小
+             */
+            UPLOAD_BY_FILE,
+            /**
+             * 按文件上传，文件按行数统计大小
+             */
+            UPLOAD_BY_LINE_FILE
+        }
+
+
         private FactorType factorType;
         private String factor;
-        private int uploadType;
+        private UpLoadType uploadType;
         private String uploadUrl;
         private String AVOSAppId;
         private String AVOSAppKey;
@@ -133,7 +137,7 @@ public class RemoteLogcatRecorder {
          * default setting
          */
         public Builder() {
-            uploadType = UPLOAD_BY_LINE;
+            uploadType = UpLoadType.UPLOAD_BY_LINE;
             uploadUrl = null;
             Upload_file_size = -1;
             shouldEncrypt = false;
@@ -174,10 +178,13 @@ public class RemoteLogcatRecorder {
         }
 
         /**
-         * <p>type as{@link RemoteLogcatRecorder.Builder#UPLOAD_BY_LINE}
-         * <p>type as{@link RemoteLogcatRecorder.Builder#UPLOAD_BY_FILE}
+         * define upload type,if default,it will upload line by line automatically,if set{@link RemoteLogcatRecorder.Builder.UpLoadType#UPLOAD_BY_FILE}or{@link RemoteLogcatRecorder.Builder.UpLoadType#UPLOAD_BY_LINE_FILE}
+         * ,you should explicit invoke {@link RemoteLogcatRecorder#doUploadLogs}
+         * <p>default is{@link RemoteLogcatRecorder.Builder.UpLoadType#UPLOAD_BY_LINE}
+         * <p>type as{@link RemoteLogcatRecorder.Builder.UpLoadType#UPLOAD_BY_FILE}
+         * <p>type as{@link RemoteLogcatRecorder.Builder.UpLoadType#UPLOAD_BY_LINE_FILE}
          */
-        public Builder uploadType(int uploadType) {
+        public Builder uploadType(UpLoadType uploadType) {
             this.uploadType = uploadType;
             return this;
         }
@@ -251,6 +258,7 @@ public class RemoteLogcatRecorder {
     //=======================================================================Builder end
 
     String PATH_LOGCAT;
+
     /**
      * init log file dir
      * TODO context null point
@@ -265,7 +273,7 @@ public class RemoteLogcatRecorder {
         }
         try {
             fileName = "t" +
-                    TimeUtils.getDateENddHHmmss() + ".log";
+                    TimeUtils.getDateENddHHmmss() + ".txt";
             out = new FileOutputStream(new File(PATH_LOGCAT, fileName));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -301,7 +309,10 @@ public class RemoteLogcatRecorder {
     private void start(Context context, String factor, String mLogDumpernotnull, String mLogDumpernull) {
         if (mLogDumper == null) {
             mLogDumper = new LogDumper(context, String.valueOf(mPId), factor);
-            AVOSService.uploadDeviceInfo(context, factor, username);
+            if (uploadType == Builder.UpLoadType.UPLOAD_BY_LINE) {
+                //UPLOAD_BY_LINE时，不需要手动调用doUploadLogs，因此要在一开始记录时就上传info
+                AVOSService.uploadDeviceInfo(context, factor, username);
+            }
             mLogDumper.start();
             Log.d("doStartLog", mLogDumpernull);
         } else {
@@ -378,6 +389,7 @@ public class RemoteLogcatRecorder {
 //        if (uploadType == Builder.UPLOAD_BY_FILE) {
 //            initFile(context);
 //        }
+        this.context = context;
         shouldStart(context);
     }
 
@@ -408,7 +420,7 @@ public class RemoteLogcatRecorder {
          */
         public LogDumper(Context context, String pid, String factor) {
             mPID = pid;
-            if (uploadType == Builder.UPLOAD_BY_FILE) {
+            if (uploadType == Builder.UpLoadType.UPLOAD_BY_FILE) {
                 initFile(context);
             }
 
@@ -499,11 +511,11 @@ public class RemoteLogcatRecorder {
         }
 
         private void doRecordorUpload(String line) throws IOException {
-            if (out != null && uploadType == Builder.UPLOAD_BY_FILE) {
+            if (out != null && uploadType == Builder.UpLoadType.UPLOAD_BY_FILE) {
                 out.write(line.getBytes());
-            } else if (uploadType == Builder.UPLOAD_BY_LINE) {
+            } else if (uploadType == Builder.UpLoadType.UPLOAD_BY_LINE) {
                 AVOSService.uploadByLine(factor, line);
-            } else if (uploadType == Builder.UPLOAD_BY_LINE_FILE) {
+            } else if (uploadType == Builder.UpLoadType.UPLOAD_BY_LINE_FILE) {
                 lines.add(line);
                 if (lines.size() > lineCount) {
                     lines.removeFirst();
@@ -514,11 +526,11 @@ public class RemoteLogcatRecorder {
     }
 
     /**
-     * {@link Builder#uploadType}必须为{@link Builder#UPLOAD_BY_FILE}或者
-     * {@link Builder#UPLOAD_BY_LINE_FILE}
+     * {@link Builder#uploadType}必须为{@link Builder.UpLoadType#UPLOAD_BY_FILE}或者
+     * {@link Builder.UpLoadType#UPLOAD_BY_LINE_FILE}
      */
     public void doUploadLogs() {
-        if (uploadType == Builder.UPLOAD_BY_LINE) {
+        if (uploadType == Builder.UpLoadType.UPLOAD_BY_LINE) {
             throw new RuntimeException("uploadType not set or uploadType is UPLOAD_BY_LINE");
         }
         FileOutputStream out = initFile(context);
@@ -532,7 +544,9 @@ public class RemoteLogcatRecorder {
 
             }
         }
-        AVOSService.uploadFile(factor, PATH_LOGCAT + fileName, null, null);
+        AVOSService.uploadFile(context, factor, PATH_LOGCAT + fileName, null, null);
+        //  某些factorType 可以在start时，上传info 某些则在点击(doUploadLogs)时上传info
+        AVOSService.uploadDeviceInfo(context, factor, username);
     }
 }
 
