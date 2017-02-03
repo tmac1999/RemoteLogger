@@ -51,8 +51,9 @@ public class MainActivity extends AppCompatActivity {
 //                .uploadUrl("www.baidu.com/log")
                     recorder = new RemoteLogcatRecorder.Builder()
                             .factorType(RemoteLogcatRecorder.FactorType.BUTTON)
-                            .factor(TestApplication.getDeviceId(getApplicationContext()))
-                            .uploadType(RemoteLogcatRecorder.Builder.UPLOAD_BY_LINE_FILE)
+                           // .factor(TestApplication.getDeviceId(getApplicationContext()))
+                            .factor("vhpfjQXjx7bJDrn8OyMSpwsu")
+                            .uploadType(RemoteLogcatRecorder.Builder.UpLoadType.UPLOAD_BY_LINE_FILE)
                             .logCmd(cmds)
                             .uploadFileMaxLine(150)
 //                .uploadFileSize(1024)
@@ -79,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
             new RemoteLogcatRecorder.Builder()
                     .factorType(RemoteLogcatRecorder.FactorType.BUTTON)
                     .factor(username)
-                    .uploadType(RemoteLogcatRecorder.Builder.UPLOAD_BY_LINE_FILE)
+                    .uploadType(RemoteLogcatRecorder.Builder.UpLoadType.UPLOAD_BY_LINE_FILE)
 //                .uploadFileSize(1024)
 //                .shouldEncrypt(true)
 //                .uploadUrl("www.baidu.com/log")
@@ -96,7 +97,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void uploadlog(View v) {
-        recorder.doUploadLogs();
+//        recorder.doUploadLogs();
+        RemoteLogcatRecorder.getInstance().doUploadLogs();
     }
 
 }

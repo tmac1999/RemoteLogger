@@ -104,7 +104,7 @@ public class RemoteLogcatRecorder {
 
     //=======================================================================Builder Start
     public static final class Builder {
-        enum UpLoadType {
+       public enum UpLoadType {
             /**
              * NOTE:this maybe cause log sequence disorder，
              */
@@ -166,7 +166,7 @@ public class RemoteLogcatRecorder {
         }
 
         /**
-         * @param lineCount 最大行数
+         * @param lineCount 最大行数  default is 1000
          * @return Builder
          */
         public Builder uploadFileMaxLine(int lineCount) {
@@ -247,7 +247,7 @@ public class RemoteLogcatRecorder {
         /**
          * <p>NOTE：factorType should not be null.if factor,factorType match with server,it will create a log file,and start log.
          * <p>if factor is null,it will immediatly return and do nothing.
-         * <p>NOTE：if already builded（which means  RemoteLogcatRecorder already exist ）,this will reuse the same instance with  new  config(ignore AVOSAppId,AVOSAppKey).
+         * <p>NOTE：if already builded（which means  RemoteLogcatRecorder already exist ）,this will create a new RemoteLogcatRecorder instance with  new  config(not include AVOSAppId,AVOSAppKey).
          */
         public RemoteLogcatRecorder build() {
             INSTANCE = new RemoteLogcatRecorder(this);
@@ -544,9 +544,12 @@ public class RemoteLogcatRecorder {
 
             }
         }
-        AVOSService.uploadFile(context, factor, PATH_LOGCAT + fileName, null, null);
+        AVOSService.uploadFile(context, factor+".txt", PATH_LOGCAT + fileName, null, null);
         //  某些factorType 可以在start时，上传info 某些则在点击(doUploadLogs)时上传info
         AVOSService.uploadDeviceInfo(context, factor, username);
+    }
+    public static RemoteLogcatRecorder getInstance(){
+        return INSTANCE;
     }
 }
 

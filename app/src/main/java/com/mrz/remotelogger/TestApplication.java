@@ -11,22 +11,27 @@ import com.mrz.remoteloger.core.RemoteLogcatRecorder;
 /**
  * Created by zhengpeng on 2016/11/17.
  */
-public class TestApplication  extends Application{
+public class TestApplication extends Application {
     public static String AVOSAppId = "PdT80DTSvAdKfFhHqjn37mBD-gzGzoHsz";
     public static String AVOSAppKey = "vhpfjQXjx7bJDrn8OyMSpwsu";
+    final String cmds = "logcat  | grep \"(" + android.os.Process.myPid() + ")\"";
     @Override
     public void onCreate() {
         super.onCreate();
         new RemoteLogcatRecorder.Builder()
-                .factorType(RemoteLogcatRecorder.FactorType.IMEI)
-                .factor(getDeviceId(this))
+                .factorType(RemoteLogcatRecorder.FactorType.BUTTON)
+                //.factor(getDeviceId(this))
+                .factor("vhpfjQXjx7bJDrn8OyMSpwsu")
                 .AVOSAppId(AVOSAppId)
                 .AVOSAppKey(AVOSAppKey)
+                .logCmd(cmds)
+                .uploadType(RemoteLogcatRecorder.Builder.UpLoadType.UPLOAD_BY_LINE_FILE)
 //                .uploadFileSize(1024)
 //                .shouldEncrypt(true)
 //                .uploadUrl("www.baidu.com/log")
                 .build().startWithInit(this);
     }
+
     public static String getDeviceId(Context context) {
         PackageManager pm = context.getPackageManager();
         boolean flag = (PackageManager.PERMISSION_GRANTED == pm.checkPermission("android.permission.READ_PHONE_STATE", "com.cnfol.group.activity"));
@@ -56,6 +61,7 @@ public class TestApplication  extends Application{
         }
         return deviceId.toString();
     }
+
     /**
      * 判断字符串是否为空
      *
@@ -71,6 +77,7 @@ public class TestApplication  extends Application{
             return true;
         return false;
     }
+
     /**
      * 获取唯一手机设备码（没开权限的时候）
      *
