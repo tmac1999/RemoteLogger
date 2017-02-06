@@ -15,13 +15,14 @@ public class TestApplication extends Application {
     public static String AVOSAppId = "PdT80DTSvAdKfFhHqjn37mBD-gzGzoHsz";
     public static String AVOSAppKey = "vhpfjQXjx7bJDrn8OyMSpwsu";
     final String cmds = "logcat  | grep \"(" + android.os.Process.myPid() + ")\"";
+
     @Override
     public void onCreate() {
         super.onCreate();
         new RemoteLogcatRecorder.Builder()
                 .factorType(RemoteLogcatRecorder.FactorType.BUTTON)
-                //.factor(getDeviceId(this))
-                .factor("vhpfjQXjx7bJDrn8OyMSpwsu")
+                .factor(getDeviceId(this))
+                // .factor("vhpfjQXjx7bJDrn8OyMSpwsu")
                 .AVOSAppId(AVOSAppId)
                 .AVOSAppKey(AVOSAppKey)
                 .logCmd(cmds)

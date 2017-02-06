@@ -541,7 +541,6 @@ public class RemoteLogcatRecorder {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-
             }
         }
         AVOSService.uploadFile(context, factor+".txt", PATH_LOGCAT + fileName, null, null);

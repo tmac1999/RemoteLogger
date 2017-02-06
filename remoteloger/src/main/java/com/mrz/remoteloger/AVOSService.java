@@ -53,7 +53,7 @@ public class AVOSService {
             avFile = AVFile.withAbsoluteLocalPath(fileName, imgAbsoluteLocalPath);
             String deviceType = "BRAND=" + Build.BRAND + ",MODEL=" + Build.MODEL + ",SDK_INT=" + Build.VERSION.SDK_INT;
             avFile.addMetaData("deviceType", deviceType);
-          //  avFile.addMetaData("imei", CommonUtils.getDeviceId(c));
+            avFile.addMetaData("imei", CommonUtils.getDeviceId(c));
             avFile.addMetaData("appversion", CommonUtils.getPackageVersionAndName(c));
         } catch (IOException e) {
             e.printStackTrace();
@@ -113,7 +113,7 @@ public class AVOSService {
         avObject.put("deviceType", deviceType);
         avObject.put("networkType", NetWorkHelper.getInstance(c).getNetWorkType());
         avObject.put("user_factor", user_factor);
-      //  avObject.put("imei", CommonUtils.getDeviceId(c));
+        avObject.put("imei", CommonUtils.getDeviceId(c));
         avObject.put("appversion", CommonUtils.getPackageVersionAndName(c));
         avObject.put("username", username);
 
